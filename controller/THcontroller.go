@@ -31,8 +31,8 @@ func CreateOrderDetail_th(c *gin.Context, db *sql.DB) {
 	toppings := strings.Join(orderDetail_th.Topping_nameTH, ",")
 
 	// Insert order detail into the database
-	insertQuery := "INSERT INTO order_detail (order_id, bread_nameTH, meat_nameTH, veg_nameTH, sauce_nameTH, topping_nameTH) VALUES (?, ?, ?, ?, ?)"
-	_, err := db.Exec(insertQuery, orderDetail_th.Order_id, orderDetail_th.Bread_nameTH, meats, vegs, sauces, toppings)
+	insertQuery := "INSERT INTO order_detail ( bread_nameTH, meat_nameTH, veg_nameTH, sauce_nameTH, topping_nameTH) VALUES (?, ?, ?, ?, ?)"
+	_, err := db.Exec(insertQuery,  orderDetail_th.Bread_nameTH, meats, vegs, sauces, toppings)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error inserting data"})
@@ -123,7 +123,7 @@ func GetOrderDetail_th(c *gin.Context, db *sql.DB) {
 	orderDetail.Sum_price = totalPrice
 
 	// Update the Sum_Price in the table
-	updateQuery := "UPDATE Order_detail SET sum_price = ? WHERE order_id = ?"
+	updateQuery := "UPDATE order_detail SET sum_price = ? WHERE order_id = ?"
 	_, err = db.Exec(updateQuery, orderDetail.Sum_price, detailID)
 	if err != nil {
 		log.Printf("Error updating Sum_Price: %v", err)
@@ -159,7 +159,7 @@ func calculateTotalPrice_th(db *sql.DB, bread string, meat []string, veg []strin
 
 	for _, v := range veg {
 		var price int
-		err = db.QueryRow("SELECT veg_price FROM veg WHERE veg_nameTH = ?", v).Scan(&price)
+		err = db.QueryRow("SELECT veg_price FROM vegetable WHERE veg_nameTH = ?", v).Scan(&price)
 		if err != nil {
 			return 0, err
 		}
@@ -168,7 +168,7 @@ func calculateTotalPrice_th(db *sql.DB, bread string, meat []string, veg []strin
 
 	for _, s := range sauce {
 		var price int
-		err = db.QueryRow("SELECT sauce_price FROM sacue WHERE sauce_nameTH = ?", s).Scan(&price)
+		err = db.QueryRow("SELECT sauce_price FROM sauce WHERE sauce_nameTH = ?", s).Scan(&price)
 		if err != nil {
 			return 0, err
 		}
@@ -183,25 +183,6 @@ func calculateTotalPrice_th(db *sql.DB, bread string, meat []string, veg []strin
 		}
 		toppingPrice += price
 	}
-	/*err = db.QueryRow("SELECT Flavor_price FROM flavor WHERE Flavor_name_th = ?", flavor).Scan(&flavorPrice)
-	if err != nil {
-		return 0, err
-	}
-
-	err = db.QueryRow("SELECT Sauce_price FROM sauce WHERE Sauce_name_th = ?", sauce).Scan(&saucePrice)
-	if err != nil {
-		return 0, err
-	}
-
-	// Calculate the price of toppings
-	for _, t := range toppings {
-		var price int
-		err = db.QueryRow("SELECT Topping_price FROM topping WHERE Topping_name_th = ?", t).Scan(&price)
-		if err != nil {
-			return 0, err
-		}
-		toppingPrice += price
-	}*/
 
 	// Calculate the total price
 	totalPrice := breadPrice + meatPrice + vegPrice + saucePrice + toppingPrice

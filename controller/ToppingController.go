@@ -152,6 +152,5 @@ func DeleteTopping(c *gin.Context, db *sql.DB) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error resetting auto-increment"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "Topping deleted successfully"})
 }
