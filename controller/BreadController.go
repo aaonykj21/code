@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// var sizes []models.Size
 
 func CreateBread(c *gin.Context, db *sql.DB) {
 	var bread models.Bread

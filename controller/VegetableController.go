@@ -36,7 +36,7 @@ func CreateVeg(c *gin.Context, db *sql.DB) {
 	var errors []error
 
 	for _, veg := range vegs.Vegs {
-		insertQuery := "INSERT INTO veg (veg_nameTH, veg_nameENG, veg_price, veg_stock) VALUES (?, ?, ?, ?)"
+		insertQuery := "INSERT INTO vegetable (veg_nameTH, veg_nameENG, veg_price, veg_stock) VALUES (?, ?, ?, ?)"
 		_, err := db.Exec(insertQuery, veg.Veg_nameTH, veg.Veg_nameENG, veg.Veg_price, veg.Veg_stock)
 		if err != nil {
 			log.Printf("Error executing query: %v", err)
@@ -61,7 +61,7 @@ func GetVegs(c *gin.Context, db *sql.DB) {
 	}
 
 	// Query the database
-	rows, err := db.Query("SELECT * FROM veg")
+	rows, err := db.Query("SELECT * FROM vegetable")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying data"})
 		return
@@ -92,7 +92,7 @@ func GetVeg(c *gin.Context, db *sql.DB) {
 	}
 
 	var veg models.Veg
-	err := db.QueryRow("SELECT * FROM veg WHERE veg_id = ?", vegID).Scan(&veg.Veg_id, &veg.Veg_nameTH, &veg.Veg_nameENG, &veg.Veg_price, &veg.Veg_stock)
+	err := db.QueryRow("SELECT * FROM vegetable WHERE veg_id = ?", vegID).Scan(&veg.Veg_id, &veg.Veg_nameTH, &veg.Veg_nameENG, &veg.Veg_price, &veg.Veg_stock)
 	if err != nil {
 		log.Printf("Error querying data: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying data"})
@@ -117,7 +117,7 @@ func UpdateVeg(c *gin.Context, db *sql.DB) {
 	}
 
 	// Update database
-	updateQuery := "UPDATE veg SET veg_nameTH=?, veg_nameENG=?, veg_price=?, veg_stock=? WHERE veg_id=?"
+	updateQuery := "UPDATE vegetable SET veg_nameTH=?, veg_nameENG=?, veg_price=?, veg_stock=? WHERE veg_id=?"
 	_, err := db.Exec(updateQuery, veg.Veg_nameTH, veg.Veg_nameENG, veg.Veg_price, veg.Veg_stock, id)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
@@ -137,7 +137,7 @@ func DeleteVeg(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	deleteQuery := "DELETE FROM veg WHERE veg_id = ?"
+	deleteQuery := "DELETE FROM vegetable WHERE veg_id = ?"
 	_, err := db.Exec(deleteQuery, vegID)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
@@ -145,7 +145,7 @@ func DeleteVeg(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	resetQuery := "ALTER TABLE meat AUTO_INCREMENT = 1"
+	resetQuery := "ALTER TABLE vegetable AUTO_INCREMENT = 1"
 	_, err = db.Exec(resetQuery)
 	if err != nil {
 		log.Printf("Error resetting auto-increment: %v", err)
@@ -153,5 +153,5 @@ func DeleteVeg(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Veg deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Vegetable deleted successfully"})
 }

@@ -31,7 +31,7 @@ func CreateOrderDetail_th(c *gin.Context, db *sql.DB) {
 	toppings := strings.Join(orderDetail_th.Topping_nameTH, ",")
 
 	// Insert order detail into the database
-	insertQuery := "INSERT INTO Order_detail (order_id, bread_nameTH, meat_nameTH, veg_nameTH, sauce_nameTH, topping_nameTH) VALUES (?, ?, ?, ?, ?)"
+	insertQuery := "INSERT INTO order_detail (order_id, bread_nameTH, meat_nameTH, veg_nameTH, sauce_nameTH, topping_nameTH) VALUES (?, ?, ?, ?, ?)"
 	_, err := db.Exec(insertQuery, orderDetail_th.Order_id, orderDetail_th.Bread_nameTH, meats, vegs, sauces, toppings)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
@@ -57,7 +57,7 @@ func CreateOrderDetail_th(c *gin.Context, db *sql.DB) {
 	}
 
 	for _, v := range orderDetail_th.Veg_nameTH {
-		_, err = db.Exec("UPDATE veg SET veg_stock = veg_stock - 1 WHERE veg_nameTH = ?", v)
+		_, err = db.Exec("UPDATE vegetable SET veg_stock = veg_stock - 1 WHERE veg_nameTH = ?", v)
 		if err != nil {
 			log.Printf("Error updating veg stock: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating veg stock"})
@@ -82,32 +82,6 @@ func CreateOrderDetail_th(c *gin.Context, db *sql.DB) {
 			return
 		}
 	}
-
-	// Decrease the stock of flavor
-	/*_, err = db.Exec("UPDATE flavor SET Flavor_Stock = Flavor_Stock - 1 WHERE Flavor_name_th = ?", orderDetail_th.Flavor_name_th)
-	if err != nil {
-		log.Printf("Error updating flavor stock: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating flavor stock"})
-		return
-	}
-
-	// Decrease the stock of toppings
-	for _, t := range orderDetail_th.Topping_name_th {
-		_, err = db.Exec("UPDATE topping SET Topping_Stock = Topping_Stock - 1 WHERE Topping_name_th = ?", t)
-		if err != nil {
-			log.Printf("Error updating topping stock: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating topping stock"})
-			return
-		}
-	}
-
-	// Decrease the stock of sauce
-	_, err = db.Exec("UPDATE sauce SET Sauce_Stock = Sauce_Stock - 1 WHERE Sauce_name_th = ?", orderDetail_th.Sauce_name_th)
-	if err != nil {
-		log.Printf("Error updating sauce stock: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating sauce stock"})
-		return
-	}*/
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order detail created successfully"})
 }

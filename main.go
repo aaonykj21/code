@@ -4,13 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"time"
 	"project/controller"
-
+	"time"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
-
 var Db *sql.DB
 
 func SetupDB() *sql.DB {
@@ -41,20 +39,17 @@ func main() {
 	r.PUT("/updateBread/:id", func(c *gin.Context) { controller.UpdateBread(c, Db) })
 	r.DELETE("/deleteBread/:id", func(c *gin.Context) { controller.DeleteBread(c, Db) })
 
-	
 	r.POST("/createMeat", func(c *gin.Context) { controller.CreateMeat(c, Db) })
 	r.GET("/getMeats", func(c *gin.Context) { controller.GetMeats(c, Db) })
-	r.GET("/getMeat/:id", func(c *gin.Context) { controller.GetMeats(c, Db) })
+	r.GET("/getMeat/:id", func(c *gin.Context) { controller.GetMeat(c, Db) })
 	r.PUT("/updateMeat/:id", func(c *gin.Context) { controller.UpdateMeat(c, Db) })
 	r.DELETE("/deleteMeat/:id", func(c *gin.Context) { controller.DeleteMeat(c, Db) })
 
-	
 	r.POST("/createVeg", func(c *gin.Context) { controller.CreateVeg(c, Db) })
 	r.GET("/getVegs", func(c *gin.Context) { controller.GetVegs(c, Db) })
 	r.GET("/getVeg/:id", func(c *gin.Context) { controller.GetVeg(c, Db) })
 	r.PUT("/updateVeg/:id", func(c *gin.Context) { controller.UpdateVeg(c, Db) })
-	r.DELETE("/deleteVeg/:id", func(c *gin.Context) { controller.DeleteVeg(c, Db) }) 
-
+	r.DELETE("/deleteVeg/:id", func(c *gin.Context) { controller.DeleteVeg(c, Db) })
 
 	r.POST("/createSauce", func(c *gin.Context) { controller.CreateSauce(c, Db) })
 	r.GET("/getSauces", func(c *gin.Context) { controller.GetSauces(c, Db) })
@@ -62,13 +57,11 @@ func main() {
 	r.PUT("/updateSauce/:id", func(c *gin.Context) { controller.UpdateSauce(c, Db) })
 	r.DELETE("/deleteSauce/:id", func(c *gin.Context) { controller.DeleteSauce(c, Db) })
 
-	
 	r.POST("/createTopping", func(c *gin.Context) { controller.CreateTopping(c, Db) })
 	r.GET("/getToppings", func(c *gin.Context) { controller.GetToppings(c, Db) })
 	r.GET("/getTopping/:id", func(c *gin.Context) { controller.GetTopping(c, Db) })
 	r.PUT("/updateTopping/:id", func(c *gin.Context) { controller.UpdateTopping(c, Db) })
 	r.DELETE("/deleteTopping/:id", func(c *gin.Context) { controller.DeleteTopping(c, Db) })
-
 
 	//orderdetail_en
 	r.POST("/createOrderDetail-en", func(c *gin.Context) { controller.CreateOrderDetail_eng(c, Db) })
@@ -83,5 +76,5 @@ func main() {
 	r.GET("/getOrderDetail-th/:id", func(c *gin.Context) { controller.GetOrderDetail_th(c, Db) })
 	r.PUT("/updateOrderDetail-th/:id", func(c *gin.Context) { controller.UpdateOrderDetail_th(c, Db) })
 	r.DELETE("/deleteOrderDetail-th/:id", func(c *gin.Context) { controller.DeleteOrderDetail_th(c, Db) })
-	r.Run(":8080")
+	r.Run(":8081")
 }

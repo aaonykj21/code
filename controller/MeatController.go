@@ -8,11 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 type Meats struct {
 	Meats []models.Meat `json:"meats"`
 }
-
 
 func CreateMeat(c *gin.Context, db *sql.DB) {
 	var meats Meats
@@ -52,8 +50,8 @@ func CreateMeat(c *gin.Context, db *sql.DB) {
 	c.JSON(http.StatusOK, gin.H{"message": "Meats created successfully"})
 }
 
-
 func GetMeats(c *gin.Context, db *sql.DB) {
+
 	if db == nil {
 		log.Fatalf("DB connection is nil")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
@@ -118,7 +116,7 @@ func UpdateMeat(c *gin.Context, db *sql.DB) {
 
 	// Update database
 	updateQuery := "UPDATE meat SET meat_nameTH=?, meat_nameENG=?, meat_price=?, meat_stock=? WHERE meat_id=?"
-	_, err := db.Exec(updateQuery, meat.Meat_nameTH, meat.Meat_nameENG, meat.Meat_price, meat.Meat_stock, id)
+	_, err := db.Exec(updateQuery, meat.Meat_nameTH, meat.Meat_nameENG, meat.Meat_price, meat.Meat_price, id)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating data"})
@@ -137,7 +135,7 @@ func DeleteMeat(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	deleteQuery := "DELETE FROM topping WHERE Topping_ID = ?"
+	deleteQuery := "DELETE FROM meat WHERE meat_id = ?"
 	_, err := db.Exec(deleteQuery, meatID)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)

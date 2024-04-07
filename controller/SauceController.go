@@ -92,7 +92,7 @@ func GetSauce(c *gin.Context, db *sql.DB) {
 	}
 
 	var sauce models.Sauce
-	err := db.QueryRow("SELECT * FROM sauceWHERE sauce_id = ?", sauceID).Scan(&sauce.Sauce_id, &sauce.Sauce_nameTH, &sauce.Sauce_nameENG, &sauce.Sauce_price, &sauce.Sauce_stock)
+	err := db.QueryRow("SELECT * FROM sauce WHERE sauce_id = ?", sauceID).Scan(&sauce.Sauce_id, &sauce.Sauce_nameTH, &sauce.Sauce_nameENG, &sauce.Sauce_price, &sauce.Sauce_stock)
 	if err != nil {
 		log.Printf("Error querying data: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying data"})

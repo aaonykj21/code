@@ -31,7 +31,7 @@ func CreateOrderDetail_eng(c *gin.Context, db *sql.DB) {
 	toppings := strings.Join(orderDetail_eng.Topping_nameENG, ",")
 
 	// Insert order detail into the database
-	insertQuery := "INSERT INTO Order_detail (order_id, bread_nameENG, meat_nameENG, veg_nameENG, sauce_nameENG, topping_nameENG) VALUES (?, ?, ?, ?, ?)"
+	insertQuery := "INSERT INTO order_detail (order_id, bread_nameENG, meat_nameENG, veg_nameENG, sauce_nameENG, topping_nameENG) VALUES (?, ?, ?, ?, ?)"
 	_, err := db.Exec(insertQuery, orderDetail_eng.Order_id, orderDetail_eng.Bread_nameENG, meats, vegs, sauces, toppings)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
@@ -57,7 +57,7 @@ func CreateOrderDetail_eng(c *gin.Context, db *sql.DB) {
 	}
 
 	for _, v := range orderDetail_eng.Veg_nameENG {
-		_, err = db.Exec("UPDATE veg SET veg_stock = veg_stock - 1 WHERE veg_nameENG = ?", v)
+		_, err = db.Exec("UPDATE vegetable SET veg_stock = veg_stock - 1 WHERE veg_nameENG = ?", v)
 		if err != nil {
 			log.Printf("Error updating veg stock: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating veg stock"})
@@ -83,31 +83,6 @@ func CreateOrderDetail_eng(c *gin.Context, db *sql.DB) {
 		}
 	}
 
-	// Decrease the stock of flavor
-	/*_, err = db.Exec("UPDATE flavor SET Flavor_Stock = Flavor_Stock - 1 WHERE Flavor_name_th = ?", orderDetail_th.Flavor_name_th)
-	if err != nil {
-		log.Printf("Error updating flavor stock: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating flavor stock"})
-		return
-	}
-
-	// Decrease the stock of toppings
-	for _, t := range orderDetail_th.Topping_name_th {
-		_, err = db.Exec("UPDATE topping SET Topping_Stock = Topping_Stock - 1 WHERE Topping_name_th = ?", t)
-		if err != nil {
-			log.Printf("Error updating topping stock: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating topping stock"})
-			return
-		}
-	}
-
-	// Decrease the stock of sauce
-	_, err = db.Exec("UPDATE sauce SET Sauce_Stock = Sauce_Stock - 1 WHERE Sauce_name_th = ?", orderDetail_th.Sauce_name_th)
-	if err != nil {
-		log.Printf("Error updating sauce stock: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating sauce stock"})
-		return
-	}*/
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order detail created successfully"})
 }
@@ -127,7 +102,7 @@ func GetOrderDetail_eng(c *gin.Context, db *sql.DB) {
 	var vegs string
 	var sauces string
 	var toppings string
-	err := db.QueryRow("SELECT bread_nameENG, meat_nameENG, veg_nameENG, sauce_nameENG, topping_nameENG FROM Order_detail WHERE order_id = ?", detailID).Scan(&orderDetail.Bread_nameENG, &meats, &vegs, &sauces,&toppings)
+	err := db.QueryRow("SELECT bread_nameENG, meat_nameENG, veg_nameENG, sauce_nameENG, topping_nameENG FROM order_detail WHERE order_id = ?", detailID).Scan(&orderDetail.Bread_nameENG, &meats, &vegs, &sauces,&toppings)
 	if err != nil {
 		log.Printf("Error querying data: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying data"})
@@ -149,7 +124,7 @@ func GetOrderDetail_eng(c *gin.Context, db *sql.DB) {
 	orderDetail.Sum_price = totalPrice
 
 	// Update the Sum_Price in the table
-	updateQuery := "UPDATE Order_detail SET sum_price = ? WHERE order_id = ?"
+	updateQuery := "UPDATE order_detail SET sum_price = ? WHERE order_id = ?"
 	_, err = db.Exec(updateQuery, orderDetail.Sum_price, detailID)
 	if err != nil {
 		log.Printf("Error updating Sum_Price: %v", err)
@@ -209,26 +184,6 @@ func calculateTotalPrice_eng(db *sql.DB, bread string, meat []string, veg []stri
 		}
 		toppingPrice += price
 	}
-	/*err = db.QueryRow("SELECT Flavor_price FROM flavor WHERE Flavor_name_th = ?", flavor).Scan(&flavorPrice)
-	if err != nil {
-		return 0, err
-	}
-
-	err = db.QueryRow("SELECT Sauce_price FROM sauce WHERE Sauce_name_th = ?", sauce).Scan(&saucePrice)
-	if err != nil {
-		return 0, err
-	}
-
-	// Calculate the price of toppings
-	for _, t := range toppings {
-		var price int
-		err = db.QueryRow("SELECT Topping_price FROM topping WHERE Topping_name_th = ?", t).Scan(&price)
-		if err != nil {
-			return 0, err
-		}
-		toppingPrice += price
-	}*/
-
 	// Calculate the total price
 	totalPrice := breadPrice + meatPrice + vegPrice + saucePrice + toppingPrice
 
@@ -243,7 +198,7 @@ func GetOrderDetails_eng(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	rows, err := db.Query("SELECT * FROM Order_detail")
+	rows, err := db.Query("SELECT * FROM order_detail")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error querying data"})
 		return
@@ -279,7 +234,7 @@ func UpdateOrderDetail_eng(c *gin.Context, db *sql.DB) {
 	}
 
 	// Update the database
-	updateQuery := "UPDATE Order_detail SET bread_nameENG=?, meat_nameENG=?, veg_nameENG=?, sauce_nameENG=?, topping_nameENG, sum_price=? WHERE order_id=?"
+	updateQuery := "UPDATE order_detail SET bread_nameENG=?, meat_nameENG=?, veg_nameENG=?, sauce_nameENG=?, topping_nameENG, sum_price=? WHERE order_id=?"
 	_, err := db.Exec(updateQuery, orderDetail.Bread_nameENG, orderDetail.Meat_nameENG, orderDetail.Veg_nameENG,orderDetail.Sauce_nameENG,orderDetail.Topping_nameENG,orderDetail.Sum_price, id)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
@@ -300,13 +255,12 @@ func DeleteOrderDetail_eng(c *gin.Context, db *sql.DB) {
 		return
 	}
 
-	deleteQuery := "DELETE FROM Order_detail WHERE order_id = ?"
+	deleteQuery := "DELETE FROM order_detail WHERE order_id = ?"
 	_, err := db.Exec(deleteQuery, detailID)
 	if err != nil {
 		log.Printf("Error executing query: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error deleting data"})
 		return
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "Order detail deleted successfully"})
 }
